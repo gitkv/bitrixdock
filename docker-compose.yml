@@ -2,7 +2,7 @@ version: '2'
 
 services:
     php:
-        build: ./${PHP_VERSION}
+        build: ./php72
         container_name: php
         volumes_from:
             - source
@@ -15,7 +15,7 @@ services:
             - bitrix
         restart: always
     web_server:
-        build: ./${WEB_SERVER_TYPE}
+        build: ./nginx
         container_name: webserver
         depends_on:
             - source
@@ -59,14 +59,14 @@ services:
         image: alpine:latest
         container_name: source
         volumes:
-            - ./logs/${WEB_SERVER_TYPE}:/var/log/${WEB_SERVER_TYPE}
+            - ./logs/nginx:/var/log/nginx
             - ./logs/php:/var/log/php
             - ./logs/mysql:/var/log/mysql
             - ./logs/memcached:/var/log/memcached
             - ./data/mysql:/var/lib/mysql
             - ./data/memcached:/var/lib/memcached
             - ./www/html:/var/www/html
-            - ${SITE_PATH}:/var/www/bitrix
+            - ${SITE_PATH}:/var/www/app
             - /etc/localtime:/etc/localtime/:ro
         networks:
             - bitrix
