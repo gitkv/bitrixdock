@@ -30,18 +30,27 @@ services:
             - bitrix
         restart: always
     mysql:
-        build: ./mysql
+        build: ./${DB_TYPE}
         container_name: mysql
         volumes_from:
             - source
         ports:
             - '${INTERFACE}:3306:3306'
+        volumes:
+            - $HOME/.ssh:/root/ssh:ro
         environment:
             MYSQL_DATABASE: ${MYSQL_DATABASE}
             MYSQL_USER: ${MYSQL_USER}
             MYSQL_PASSWORD: ${MYSQL_PASSWORD}
             MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-        command: mysqld --sql-mode=""
+
+            SSH_USER: ${TUNNEL_SSH_USER}
+            SSH_HOST: ${TUNNEL_SSH_HOST}
+            SSH_PORT: ${TUNNEL_SSH_PORT}
+            LOCAL_PORT: ${TUNNEL_LOCAL_PORT}
+            REMOTE_HOST: ${TUNNEL_REMOTE_HOST}
+            REMOTE_PORT: ${TUNNEL_REMOTE_PORT}
+#        command: mysqld --sql-mode=""
         networks:
             - bitrix
         restart: always
@@ -76,4 +85,4 @@ networks:
         ipam:
             driver: default
             config:
-                - subnet: 10.100.0.0/24
+                - subnet: 10.200.0.0/24
